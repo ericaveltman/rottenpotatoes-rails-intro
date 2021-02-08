@@ -12,23 +12,42 @@ class MoviesController < ApplicationController
     @ratings_to_show = []
     
     if params[:sort] == 'release_date'
-      @release_dateCSS = 'hilite'
+      @release_dateCSS = 'p-3 mb-2 bg-warning'
       @titleCSS = ''
     elsif params[:sort] == 'title'
-      @titleCSS = 'hilite'
+      @titleCSS = 'p-3 mb-2 bg-warning'
       @release_dateCSS = ''
     end
-      
+    
+    if !params[:ratings].nil?
+      session[:ratings] = params[:ratings]
+    end
+    
+    if !params[:sort].nil?
+      session[:sort] = params[:sort]
+    end
+    
+    if params[:ratings].nil? && !session[:ratings].nil?
+      redirect_to(movies_path(:ratings=>session[:ratings], :sort=>session[:sort]))
+    elsif params[:sort].nil? && !session[:sort].nil?
+      redirect_to(movies_path(:ratings=>session[:ratings], :sort=>session[:sort]))
+    end
+    
     if params[:ratings].nil? && !params[:sort].nil?
-      @movies = Movie.all.order(params[:sort])
+      session[:sort] = params[:sort]
+      @movies = Movie.all.order(session[:sort])
       
-    elsif
-      params[:ratings].nil? && params[:sort].nil?
+    elsif params[:ratings].nil? && params[:sort].nil? 
       @movies = Movie.all
+
     else
-      @movies = Movie.with_ratings(params[:ratings].keys).order(params[:sort])
+      session[:sort] = params[:sort]
+      session[:ratings] = params[:ratings]
+      @movies = Movie.with_ratings(session[:ratings].keys).order(session[:sort])
       @ratings_to_show = params[:ratings].keys
     end
+    
+
     
   end
 
