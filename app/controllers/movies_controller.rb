@@ -9,13 +9,13 @@ class MoviesController < ApplicationController
   def index
     #@movies = Movie.all
     @all_ratings = Movie.all_ratings
-    @ratings_to_show = []
-    
+    @ratings_to_show = Movie.all_ratings
+
     if params[:sort] == 'release_date'
-      @release_dateCSS = 'p-3 mb-2 bg-warning'
+      @release_dateCSS = 'hilite'
       @titleCSS = ''
     elsif params[:sort] == 'title'
-      @titleCSS = 'p-3 mb-2 bg-warning'
+      @titleCSS = 'hilite'
       @release_dateCSS = ''
     end
     
